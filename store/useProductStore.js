@@ -11,7 +11,7 @@ const useProductStore = create((set) => ({
 
     try {
       const response = await api.get("/products");
-      const data = await response.json();
+      const data = await response.data;
       set({ products: data.message || [], loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
@@ -27,6 +27,45 @@ const useProductStore = create((set) => ({
         products: [...state.products, response.data],
         loading: false,
       }));
+    } catch (error) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  createProduct: async (productData) => {
+    set({ loading: true, error: null });
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      if (!token) {
+        throw new Error("Admin token not found. Please log in.");
+      }
+
+      const response = await api.post(`/products/product/create`, productData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ Include Bearer token
+        },
+      });
+
+      const data = await response.data;
+      console.log("API Response:", data);
+    } catch (error) {
+      console.error("API Error:", error);
+      set({ error: error.message, loading: false });
+    }
+  },
+  loginUser: async (userCredentials) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await api.post(`/admin/login`, userCredentials);
+      const data = await response.data;
+
+      if (data.token) {
+        localStorage.setItem("adminToken", data.token);
+        set({ isLoggedIn: true });
+        window.location.href = "/";
+      }
     } catch (error) {
       set({ error: error.message, loading: false });
     }

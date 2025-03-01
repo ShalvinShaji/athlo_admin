@@ -13,7 +13,6 @@ export default function ProductList({ initialProducts }) {
   }, [products, fetchProducts]);
 
   const productList = products.length > 0 ? products : initialProducts;
-  console.log(productList);
 
   return (
     <div className="p-5">
@@ -23,18 +22,20 @@ export default function ProductList({ initialProducts }) {
           <Link
             key={index}
             // href={`/products/${product.id || index}`}
-            href='/'
+            href="/"
             className="block"
           >
-            <div className="bg-white shadow-md rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg p-4 flex flex-col min-h-[350px]">
-              <div className="flex justify-center items-center h-40">
-                <Image
-                  src={product.image || "/placeholder.png"}
-                  width={150}
-                  height={150}
-                  alt={product.name || "Product Image"}
-                  className="object-contain h-full"
-                />
+            <div className="bg-white shadow-md rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg p-4 flex flex-col min-h-[400px]">
+              <div className="flex justify-center items-center h-50 bg-zinc-900">
+                {product.image && (
+                  <Image
+                    src={product.image}
+                    width={20}
+                    height={50}
+                    alt={product.name || "Product Image"}
+                    className="object-contain h-full"
+                  />
+                )}
               </div>
 
               <div className="flex flex-col flex-grow p-4">
