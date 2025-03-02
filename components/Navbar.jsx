@@ -77,14 +77,16 @@ export default function Navbar() {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-8">
-              <Link
-                href="/createproduct"
-                className={`text-base font-medium hover:opacity-70 transition-opacity ${
-                  isScrolled ? "text-black" : "text-white"
-                }`}
-              >
-                Create Product
-              </Link>
+              {isLoggedIn && (
+                <Link
+                  href="/createproduct"
+                  className={`text-base font-medium hover:opacity-70 transition-opacity ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                >
+                  Create Product
+                </Link>
+              )}
               <Link
                 href="/"
                 className={`text-base font-medium hover:opacity-70 transition-opacity ${
@@ -193,12 +195,16 @@ export default function Navbar() {
             }`}
           >
             <div className="flex flex-col space-y-6">
-              <Link
-                href="/createproduct"
-                className="text-base font-medium hover:opacity-70 transition-opacity text-black"
-              >
-                Create Product
-              </Link>
+              {isLoggedIn && (
+                <Link
+                  href="/createproduct"
+                  className={`text-base font-medium hover:opacity-70 transition-opacity ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                >
+                  Create Product
+                </Link>
+              )}
               <Link
                 href="/"
                 className="text-base font-medium hover:opacity-70 transition-opacity text-black"
