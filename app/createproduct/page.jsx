@@ -8,7 +8,7 @@ const CreateProduct = () => {
   const [preview, setPreview] = useState(null);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#1111]">
+    <div className="flex items-center justify-center bg-[#1111] pt-[120px]">
       <div className="w-full p-8 space-y-6 bg-[#2222] shadow-lg">
         <h1 className="text-2xl font-bold text-center text-white">
           Create Product

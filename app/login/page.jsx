@@ -11,9 +11,9 @@ const Login = () => {
   const router = useRouter(); // Get router instance
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#1111]">
+    <div className="flex items-center justify-center bg-[#1111] pt-[120px]">
       <div className="w-full max-w-md p-8 space-y-6 bg-[#2222] shadow-lg">
-        <h1 className="text-2xl font-bold text-center text-white">Login</h1>
+        <h1 className="text-3xl font-bold text-center mb-6">Login to Athlo</h1>
         {error && <p className="text-red-400 text-center">{error}</p>}{" "}
         <Formik
           initialValues={{ email: "", password: "" }}
