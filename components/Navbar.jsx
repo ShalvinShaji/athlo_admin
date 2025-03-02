@@ -116,7 +116,7 @@ export default function Navbar() {
               {/* User Icon */}
               <button
                 onClick={() => setMenuOpen((prev) => !prev)}
-                className={`relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors ${
+                className={`relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors cursor-pointer ${
                   isScrolled ? "text-black" : "text-white"
                 }`}
               >
