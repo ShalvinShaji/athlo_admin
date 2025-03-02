@@ -7,52 +7,60 @@ const CreateProduct = () => {
   const { createProduct } = useProductStore();
   const [preview, setPreview] = useState(null);
 
+  // Handle image selection
+  const handleImageChange = (event, setFieldValue) => {
+    const file = event.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+      setFieldValue("image", file);
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center bg-[#1111] pt-[120px]">
-      <div className="w-full p-8 space-y-6 bg-[#2222] shadow-lg">
-        <h1 className="text-2xl font-bold text-center text-white">
-          Create Product
-        </h1>
-        <Formik
-          initialValues={{
-            name: "",
-            category: "",
-            description: "",
-            price: "",
-            stock: "",
-          }}
-          validate={(values) => {
-            const errors = {};
-            if (!values.name) errors.name = "Product name is required";
-            if (!values.category) errors.category = "Category is required";
-            if (!values.description)
-              errors.description = "Description is required";
-            if (!values.price) errors.price = "Price is required";
-            if (!values.stock) errors.stock = "Stock is required";
-            return errors;
-          }}
-          onSubmit={async (values, { setSubmitting, resetForm }) => {
-            try {
-              const productData = {
-                name: values.name,
-                category: values.category,
-                description: values.description,
-                price: parseFloat(values.price),
-                stock: parseInt(values.stock),
-              };
-              await createProduct(productData);
-              resetForm();
-              setPreview(null);
-            } catch (error) {
-              console.error("Error creating product:", error);
-            }
-            setSubmitting(false);
-          }}
-        >
-          {({ isSubmitting }) => (
-            <Form className="grid grid-cols-2 gap-6">
-              {/* Left Section: Form Fields */}
-              <div className="space-y-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#1111] pt-[120px]">
+      <h1 className="text-3xl font-bold text-white mb-6">Create Product</h1>
+
+      <div className="flex w-[80%] p-8 bg-[#2222] shadow-lg gap-6">
+        {/* Left Section: Form Fields */}
+        <div className="flex-1 p-6 bg-zinc-800 rounded-lg shadow-md">
+          <Formik
+            initialValues={{
+              name: "",
+              category: "",
+              description: "",
+              price: "",
+              image: null,
+            }}
+            validate={(values) => {
+              const errors = {};
+              if (!values.name) errors.name = "Product name is required";
+              if (!values.category) errors.category = "Category is required";
+              if (!values.description)
+                errors.description = "Description is required";
+              if (!values.price) errors.price = "Price is required";
+              if (!values.image) errors.image = "Image is required";
+              return errors;
+            }}
+            onSubmit={async (values, { setSubmitting, resetForm }) => {
+              try {
+                const formData = new FormData();
+                formData.append("name", values.name);
+                formData.append("category", values.category);
+                formData.append("description", values.description);
+                formData.append("price", values.price);
+                formData.append("image", values.image);
+
+                await createProduct(formData);
+                resetForm();
+                setPreview(null);
+              } catch (error) {
+                console.error("Error creating product:", error);
+              }
+              setSubmitting(false);
+            }}
+          >
+            {({ isSubmitting, setFieldValue }) => (
+              <Form className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-300">
                     Product Name
@@ -115,15 +123,18 @@ const CreateProduct = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-300">
-                    Stock
+                    Product Image
                   </label>
-                  <Field
-                    type="number"
-                    name="stock"
+                  <input
+                    type="file"
+                    accept="image/*"
                     className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
+                    onChange={(event) =>
+                      handleImageChange(event, setFieldValue)
+                    }
                   />
                   <ErrorMessage
-                    name="stock"
+                    name="image"
                     component="div"
                     className="mt-1 text-sm text-red-400"
                   />
@@ -135,10 +146,23 @@ const CreateProduct = () => {
                 >
                   {isSubmitting ? "Creating..." : "Create Product"}
                 </button>
-              </div>
-            </Form>
+              </Form>
+            )}
+          </Formik>
+        </div>
+
+        {/* Right Section: Image Preview */}
+        <div className="flex-1 flex items-center justify-center p-6 bg-zinc-800 rounded-md shadow-md">
+          {preview ? (
+            <img
+              src={preview}
+              alt="Product Preview"
+              className="w-full h-90 object-cover rounded-lg"
+            />
+          ) : (
+            <span className="text-gray-400">Image Preview</span>
           )}
-        </Formik>
+        </div>
       </div>
     </div>
   );
