@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import api from "@/lib/axiosInstance";
+import Cookies from "js-cookie";
 
 const useProductStore = create((set) => ({
   products: [],
@@ -35,7 +36,7 @@ const useProductStore = create((set) => ({
   createProduct: async (productData) => {
     set({ loading: true, error: null });
     try {
-      const token = localStorage.getItem("adminToken");
+      const token = Cookies.get("adminToken");
 
       if (!token) {
         throw new Error("Admin token not found. Please log in.");
@@ -62,7 +63,7 @@ const useProductStore = create((set) => ({
       const data = await response.data;
 
       if (data.token) {
-        localStorage.setItem("adminToken", data.token);
+        Cookies.set("adminToken", data.token, { expires: 7 });
         set({ isLoggedIn: true });
         window.location.href = "/";
       }

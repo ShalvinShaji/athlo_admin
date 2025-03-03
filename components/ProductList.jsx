@@ -4,6 +4,7 @@ import useProductStore from "@/store/useProductStore";
 import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Sidebar from "./Sidebar"; // Import the Sidebar component
 
 export default function ProductList({ initialProducts }) {
   const { products, fetchProducts } = useProductStore();
@@ -16,8 +17,9 @@ export default function ProductList({ initialProducts }) {
 
   return (
     <div className="p-5 pt-[120px]">
+      <Sidebar /> {/* Add the Sidebar component here */}
       <h1 className="text-3xl font-bold text-center mb-6">Products</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-10">
         {productList.map((product, index) => (
           <Link
             key={index}

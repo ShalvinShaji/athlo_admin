@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Menu, X, User } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +21,7 @@ export default function Navbar() {
     };
 
     const checkLoginStatus = () => {
-      const token = localStorage.getItem("adminToken");
+      const token = Cookies.get("adminToken");
       setIsLoggedIn(!!token);
     };
 
@@ -48,7 +49,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("adminToken");
+    Cookies.remove("adminToken");
     setIsLoggedIn(false);
     router.push("/login");
   };
@@ -163,7 +164,7 @@ export default function Navbar() {
                       <li>
                         <Link
                           href="/login"
-                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 text-center"
                         >
                           Login
                         </Link>
