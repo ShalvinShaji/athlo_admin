@@ -1,14 +1,18 @@
-"use client";
+'use client'
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import axios from "@/lib/axiosInstance";
 import Cookies from "js-cookie";
 import ToastMessage from "@/components/ToastMessage";
+import { useFetchProducts } from "@/store/useProductStore";
 
 const CreateProduct = () => {
   const [preview, setPreview] = useState(null);
   const [alert, setAlert] = useState({ type: "", message: "" });
+  const { data: products = [] } = useFetchProducts();
+
+  const categories = [...new Set(products.map((product) => product.category))];
 
   const showAlert = (type, message) => {
     setAlert({ type, message });
@@ -75,6 +79,7 @@ const CreateProduct = () => {
               category: "",
               description: "",
               price: "",
+              // image: null, 
             }}
             validate={(values) => {
               const errors = {};
@@ -83,18 +88,19 @@ const CreateProduct = () => {
               if (!values.description)
                 errors.description = "Description is required";
               if (!values.price) errors.price = "Price is required";
+              // if (!values.image) errors.image = "Product image is required";
               return errors;
             }}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
               try {
-                const productData = {
-                  name: values.name,
-                  category: values.category,
-                  description: values.description,
-                  price: values.price,
-                };
+                const formData = new FormData();
+                formData.append("name", values.name);
+                formData.append("category", values.category);
+                formData.append("description", values.description);
+                formData.append("price", values.price);
+                // formData.append("image", values.image);
 
-                createProductMutation.mutate(productData);
+                createProductMutation.mutate(formData);
 
                 resetForm();
                 setPreview(null);
@@ -106,6 +112,7 @@ const CreateProduct = () => {
           >
             {({ isSubmitting, setFieldValue }) => (
               <Form className="space-y-4">
+                {/* Product Name */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300">
                     Product Name
@@ -121,21 +128,32 @@ const CreateProduct = () => {
                     className="mt-1 text-sm text-red-400"
                   />
                 </div>
+
+                {/* Category */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300">
                     Category
                   </label>
                   <Field
-                    type="text"
+                    as="select"
                     name="category"
-                    className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
-                  />
+                    className="w-full p-2 mt-1  bg-gray-700 text-gray-300 hover:text-white"
+                  >
+                    <option value="">Select a category</option>
+                    {categories.map((category, index) => (
+                      <option key={index} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </Field>
                   <ErrorMessage
                     name="category"
                     component="div"
                     className="mt-1 text-sm text-red-400"
                   />
                 </div>
+
+                {/* Description */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300">
                     Description
@@ -151,6 +169,8 @@ const CreateProduct = () => {
                     className="mt-1 text-sm text-red-400"
                   />
                 </div>
+
+                {/* Price */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300">
                     Price
@@ -166,6 +186,8 @@ const CreateProduct = () => {
                     className="mt-1 text-sm text-red-400"
                   />
                 </div>
+
+                {/* Product Image */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300">
                     Product Image
@@ -184,6 +206,8 @@ const CreateProduct = () => {
                     className="mt-1 text-sm text-red-400"
                   />
                 </div>
+
+                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting || createProductMutation.isPending}
@@ -197,6 +221,8 @@ const CreateProduct = () => {
             )}
           </Formik>
         </div>
+
+        {/* Image Preview */}
         <div className="flex-1 flex items-center justify-center p-6 bg-zinc-800 rounded-md shadow-md">
           {preview ? (
             <img
