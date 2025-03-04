@@ -1,11 +1,8 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useMutation } from "@tanstack/react-query";
-import axios from "@/lib/axiosInstance";
-import Cookies from "js-cookie";
+import { useFetchProducts, useCreateProduct } from "@/store/useProductStore";
 import ToastMessage from "@/components/ToastMessage";
-import { useFetchProducts } from "@/store/useProductStore";
 
 const CreateProduct = () => {
   const [preview, setPreview] = useState(null);
@@ -23,33 +20,7 @@ const CreateProduct = () => {
   };
 
   // React Query mutation for creating a product
-  const createProductMutation = useMutation({
-    mutationFn: async (productData) => {
-      const token = Cookies.get("adminToken");
-
-      if (!token) {
-        throw new Error("Admin token not found. Please log in.");
-      }
-
-      const response = await axios.post(
-        `/products/product/create`,
-        productData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      return response.data;
-    },
-    onSuccess: () => {
-      showAlert("success", "Product created successfully!");
-    },
-    onError: (error) => {
-      showAlert("error", `Error: ${error.message}`);
-    },
-  });
+  const createProductMutation = useCreateProduct();
 
   // Handle image selection
   const handleImageChange = (event, setFieldValue) => {
@@ -79,16 +50,15 @@ const CreateProduct = () => {
               category: "",
               description: "",
               price: "",
-              // image: null, 
+              image: null, // Image field added back
             }}
             validate={(values) => {
               const errors = {};
               if (!values.name) errors.name = "Product name is required";
               if (!values.category) errors.category = "Category is required";
-              if (!values.description)
-                errors.description = "Description is required";
+              if (!values.description) errors.description = "Description is required";
               if (!values.price) errors.price = "Price is required";
-              // if (!values.image) errors.image = "Product image is required";
+              if (!values.image) errors.image = "Product image is required"; // Validation for image
               return errors;
             }}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
@@ -98,12 +68,18 @@ const CreateProduct = () => {
                 formData.append("category", values.category);
                 formData.append("description", values.description);
                 formData.append("price", values.price);
-                // formData.append("image", values.image);
+                formData.append("image", values.image); // Ensure image is sent
 
-                createProductMutation.mutate(formData);
-
-                resetForm();
-                setPreview(null);
+                createProductMutation.mutate(formData, {
+                  onSuccess: () => {
+                    showAlert("success", "Product created successfully!");
+                    resetForm();
+                    setPreview(null);
+                  },
+                  onError: (error) => {
+                    showAlert("error", `Error: ${error.message}`);
+                  },
+                });
               } catch (error) {
                 console.error("Error creating product:", error);
               }
@@ -114,31 +90,15 @@ const CreateProduct = () => {
               <Form className="space-y-4">
                 {/* Product Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300">
-                    Product Name
-                  </label>
-                  <Field
-                    type="text"
-                    name="name"
-                    className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
-                  />
-                  <ErrorMessage
-                    name="name"
-                    component="div"
-                    className="mt-1 text-sm text-red-400"
-                  />
+                  <label className="block text-sm font-medium text-gray-300">Product Name</label>
+                  <Field type="text" name="name" className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none" />
+                  <ErrorMessage name="name" component="div" className="mt-1 text-sm text-red-400" />
                 </div>
 
                 {/* Category */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300">
-                    Category
-                  </label>
-                  <Field
-                    as="select"
-                    name="category"
-                    className="w-full p-2 mt-1  bg-gray-700 text-gray-300 hover:text-white"
-                  >
+                  <label className="block text-sm font-medium text-gray-300">Category</label>
+                  <Field as="select" name="category" className="w-full p-2 mt-1 bg-gray-700 text-gray-300 hover:text-white">
                     <option value="">Select a category</option>
                     {categories.map((category, index) => (
                       <option key={index} value={category}>
@@ -146,65 +106,33 @@ const CreateProduct = () => {
                       </option>
                     ))}
                   </Field>
-                  <ErrorMessage
-                    name="category"
-                    component="div"
-                    className="mt-1 text-sm text-red-400"
-                  />
+                  <ErrorMessage name="category" component="div" className="mt-1 text-sm text-red-400" />
                 </div>
 
                 {/* Description */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300">
-                    Description
-                  </label>
-                  <Field
-                    as="textarea"
-                    name="description"
-                    className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
-                  />
-                  <ErrorMessage
-                    name="description"
-                    component="div"
-                    className="mt-1 text-sm text-red-400"
-                  />
+                  <label className="block text-sm font-medium text-gray-300">Description</label>
+                  <Field as="textarea" name="description" className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none" />
+                  <ErrorMessage name="description" component="div" className="mt-1 text-sm text-red-400" />
                 </div>
 
                 {/* Price */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300">
-                    Price
-                  </label>
-                  <Field
-                    type="number"
-                    name="price"
-                    className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
-                  />
-                  <ErrorMessage
-                    name="price"
-                    component="div"
-                    className="mt-1 text-sm text-red-400"
-                  />
+                  <label className="block text-sm font-medium text-gray-300">Price</label>
+                  <Field type="number" name="price" className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none" />
+                  <ErrorMessage name="price" component="div" className="mt-1 text-sm text-red-400" />
                 </div>
 
                 {/* Product Image */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-300">
-                    Product Image
-                  </label>
+                  <label className="block text-sm font-medium text-gray-300">Product Image</label>
                   <input
                     type="file"
                     accept="image/*"
                     className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
-                    onChange={(event) =>
-                      handleImageChange(event, setFieldValue)
-                    }
+                    onChange={(event) => handleImageChange(event, setFieldValue)}
                   />
-                  <ErrorMessage
-                    name="image"
-                    component="div"
-                    className="mt-1 text-sm text-red-400"
-                  />
+                  <ErrorMessage name="image" component="div" className="mt-1 text-sm text-red-400" />
                 </div>
 
                 {/* Submit Button */}
@@ -213,9 +141,7 @@ const CreateProduct = () => {
                   disabled={isSubmitting || createProductMutation.isPending}
                   className="w-full py-2 font-semibold text-white bg-amber-500 hover:bg-amber-600 focus:outline-none cursor-pointer"
                 >
-                  {createProductMutation.isPending
-                    ? "Creating..."
-                    : "Create Product"}
+                  {createProductMutation.isPending ? "Creating..." : "Create Product"}
                 </button>
               </Form>
             )}
@@ -225,11 +151,7 @@ const CreateProduct = () => {
         {/* Image Preview */}
         <div className="flex-1 flex items-center justify-center p-6 bg-zinc-800 rounded-md shadow-md">
           {preview ? (
-            <img
-              src={preview}
-              alt="Product Preview"
-              className="w-full h-90 object-cover rounded-lg"
-            />
+            <img src={preview} alt="Product Preview" className="w-full h-90 object-cover rounded-lg" />
           ) : (
             <span className="text-gray-400">Image Preview</span>
           )}

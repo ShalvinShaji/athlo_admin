@@ -46,7 +46,7 @@ export const useCreateProduct = () => {
 
       const response = await api.post(`/products/product/create`, productData, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });

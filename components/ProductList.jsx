@@ -38,14 +38,14 @@ export default function ProductList() {
               className="block"
             >
               <div className="bg-white shadow-md rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg p-4 flex flex-col min-h-[400px]">
-                <div className="flex justify-center items-center h-50 bg-zinc-900">
+                <div className="flex justify-center items-center h-50 bg-white">
                   {product.image && (
                     <Image
                       src={product.image}
                       width={100}
                       height={100}
                       alt={product.name || "Product Image"}
-                      className="object-contain h-full"
+                      className="object-contain h-full w-full"
                     />
                   )}
                 </div>
