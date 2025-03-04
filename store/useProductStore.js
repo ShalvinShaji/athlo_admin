@@ -6,6 +6,7 @@ const useProductStore = create((set) => ({
   products: [],
   loading: false,
   error: null,
+  selectedCategory: null,
 
   fetchProducts: async () => {
     set({ loading: true, error: null });
@@ -45,7 +46,7 @@ const useProductStore = create((set) => ({
       const response = await api.post(`/products/product/create`, productData, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // ✅ Include Bearer token
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -56,6 +57,7 @@ const useProductStore = create((set) => ({
       set({ error: error.message, loading: false });
     }
   },
+
   loginUser: async (userCredentials) => {
     set({ loading: true, error: null });
     try {
@@ -70,6 +72,17 @@ const useProductStore = create((set) => ({
     } catch (error) {
       set({ error: error.message, loading: false });
     }
+  },
+
+  setSelectedCategory: (category) => {
+    set({ selectedCategory: category });
+  },
+
+  getFilteredProducts: (state) => {
+    if (!state.selectedCategory) return state.products;
+    return state.products.filter(
+      (product) => product.category === state.selectedCategory
+    );
   },
 }));
 

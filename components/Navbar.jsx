@@ -88,29 +88,24 @@ export default function Navbar() {
                   Create Product
                 </Link>
               )}
+              {isLoggedIn && (
+                <Link
+                  href="/orders"
+                  className={`text-base font-medium hover:opacity-70 transition-opacity ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                >
+                  Orders
+                </Link>
+              )}
+
               <Link
-                href="/"
-                className={`text-base font-medium hover:opacity-70 transition-opacity ${
-                  isScrolled ? "text-black" : "text-white"
-                }`}
-              >
-                Categories
-              </Link>
-              <Link
-                href="/"
+                href="/jersey"
                 className={`text-base font-medium hover:opacity-70 transition-opacity ${
                   isScrolled ? "text-black" : "text-white"
                 }`}
               >
                 Jersey
-              </Link>
-              <Link
-                href="/"
-                className={`text-base font-medium hover:opacity-70 transition-opacity ${
-                  isScrolled ? "text-black" : "text-white"
-                }`}
-              >
-                Kids
               </Link>
             </div>
 
@@ -206,24 +201,24 @@ export default function Navbar() {
                   Create Product
                 </Link>
               )}
+              {isLoggedIn && (
+                <Link
+                  href="/orders"
+                  className={`text-base font-medium hover:opacity-70 transition-opacity ${
+                    isScrolled ? "text-black" : "text-white"
+                  }`}
+                >
+                  Orders
+                </Link>
+              )}
+
               <Link
-                href="/"
-                className="text-base font-medium hover:opacity-70 transition-opacity text-black"
-              >
-                Categories
-              </Link>
-              <Link
-                href="/"
+                href="/jersey"
                 className="text-base font-medium hover:opacity-70 transition-opacity text-black"
               >
                 Jersey
               </Link>
-              <Link
-                href="/"
-                className="text-base font-medium hover:opacity-70 transition-opacity text-black"
-              >
-                Kids
-              </Link>
+
               <div className="flex items-center space-x-6 pt-6 border-t border-gray-200">
                 {isLoggedIn ? (
                   <button
