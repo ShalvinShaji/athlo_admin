@@ -1,11 +1,42 @@
 "use client";
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import useProductStore from "@/store/useProductStore";
+import { useMutation } from "@tanstack/react-query";
+import axios from "@/lib/axiosInstance";
+import Cookies from "js-cookie";
 
 const CreateProduct = () => {
-  const { createProduct } = useProductStore();
   const [preview, setPreview] = useState(null);
+
+  // React Query mutation for creating a product
+  const createProductMutation = useMutation({
+    mutationFn: async (productData) => {
+      const token = Cookies.get("adminToken");
+
+      if (!token) {
+        throw new Error("Admin token not found. Please log in.");
+      }
+
+      const response = await axios.post(
+        `/products/product/create`,
+        productData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return response.data;
+    },
+    onSuccess: () => {
+      alert("Product created successfully!");
+    },
+    onError: (error) => {
+      alert(`Error: ${error.message}`);
+    },
+  });
 
   // Handle image selection
   const handleImageChange = (event, setFieldValue) => {
@@ -21,7 +52,6 @@ const CreateProduct = () => {
       <h1 className="text-3xl font-bold text-white mb-6">Create Product</h1>
 
       <div className="flex w-[80%] p-8 bg-[#2222] shadow-lg gap-6">
-        {/* Left Section: Form Fields */}
         <div className="flex-1 p-6 bg-zinc-800 rounded-lg shadow-md">
           <Formik
             initialValues={{
@@ -29,7 +59,6 @@ const CreateProduct = () => {
               category: "",
               description: "",
               price: "",
-              image: null,
             }}
             validate={(values) => {
               const errors = {};
@@ -38,7 +67,6 @@ const CreateProduct = () => {
               if (!values.description)
                 errors.description = "Description is required";
               if (!values.price) errors.price = "Price is required";
-              if (!values.image) errors.image = "Image is required";
               return errors;
             }}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
@@ -48,9 +76,8 @@ const CreateProduct = () => {
                 formData.append("category", values.category);
                 formData.append("description", values.description);
                 formData.append("price", values.price);
-                formData.append("image", values.image);
 
-                await createProduct(formData);
+                createProductMutation.mutate(formData);
                 resetForm();
                 setPreview(null);
               } catch (error) {
@@ -141,17 +168,17 @@ const CreateProduct = () => {
                 </div>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || createProductMutation.isPending}
                   className="w-full py-2 font-semibold text-white bg-amber-500 hover:bg-amber-600 focus:outline-none cursor-pointer"
                 >
-                  {isSubmitting ? "Creating..." : "Create Product"}
+                  {createProductMutation.isPending
+                    ? "Creating..."
+                    : "Create Product"}
                 </button>
               </Form>
             )}
           </Formik>
         </div>
-
-        {/* Right Section: Image Preview */}
         <div className="flex-1 flex items-center justify-center p-6 bg-zinc-800 rounded-md shadow-md">
           {preview ? (
             <img

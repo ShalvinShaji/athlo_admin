@@ -1,17 +1,20 @@
-"use client"; // Client component
+"use client";
 
 import { useState } from "react";
-import { Menu, X, Home, ShoppingCart } from "lucide-react"; // Import Lucide icons
+import { Menu, X, Home, ShoppingCart } from "lucide-react";
 import useProductStore from "@/store/useProductStore";
+import { useFetchProducts } from "@/store/useProductStore";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { products, setSelectedCategory } = useProductStore();
+  const { setSelectedCategory } = useProductStore();
+  const { data: products = [] } = useFetchProducts();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
+  // Extract unique categories from fetched products
   const categories = [...new Set(products.map((product) => product.category))];
 
   return (
@@ -21,7 +24,7 @@ export default function Sidebar() {
         onClick={toggleSidebar}
         className="md:hidden fixed top-[120px] left-4 p-2 bg-zinc-500 text-white rounded-lg shadow-lg z-300 hover:bg-zinc-600 transition-colors"
       >
-        <Menu size={20} /> {/* Use Lucide icon */}
+        <Menu size={20} /> 
       </button>
 
       {/* Sidebar */}
@@ -35,7 +38,7 @@ export default function Sidebar() {
           onClick={toggleSidebar}
           className="md:hidden absolute top-2 right-2 p-2 text-white border-2 rounded-lg shadow-lg z-300 hover:bg-zinc-600 transition-colors"
         >
-          <X size={20} /> {/* Use Lucide icon */}
+          <X size={20} /> 
         </button>
 
         {/* Sidebar Content */}

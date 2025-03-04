@@ -1,17 +1,14 @@
-import api from "@/lib/axiosInstance";
-import ProductList from "@/components/ProductList"; // Import client component
+"use client";
 
-export async function getProducts() {
-  try {
-    const response = await api.get("/products");
-    return response.data.message;
-  } catch (error) {
-    return [];
-  }
-}
+import { useFetchProducts } from "@/store/useProductStore";
+import ProductList from "@/components/ProductList";
+import Loading from "./loading";
 
-export default async function ProductsPage() {
-  const initialProducts = await getProducts();
+export default function ProductsPage() {
+  const { data: products, isLoading, error } = useFetchProducts();
 
-  return <ProductList initialProducts={initialProducts} />;
+  if (isLoading) return <Loading />;
+  if (error) return <p>Error fetching products: {error.message}</p>;
+
+  return <ProductList initialProducts={products || []} />;
 }

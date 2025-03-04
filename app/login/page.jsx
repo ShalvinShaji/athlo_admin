@@ -1,20 +1,20 @@
 "use client";
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useRouter } from "next/navigation"; // Next.js router for redirection
-import useProductStore from "@/store/useProductStore"; // Import Zustand store
+import { useRouter } from "next/navigation";
+import { useLoginUser } from "@/store/useProductStore";
 
 const Login = () => {
-  const loginUser = useProductStore((state) => state.loginUser);
-  const loading = useProductStore((state) => state.loading);
-  const error = useProductStore((state) => state.error);
-  const router = useRouter(); // Get router instance
+  const router = useRouter();
+  const { mutate: loginUser, isLoading, isError, error } = useLoginUser();
 
   return (
     <div className="flex items-center justify-center bg-[#1111] pt-[120px]">
       <div className="w-full max-w-md p-8 space-y-6 bg-[#2222] shadow-lg">
         <h1 className="text-3xl font-bold text-center mb-6">Login to Athlo</h1>
-        {error && <p className="text-red-400 text-center">{error}</p>}{" "}
+
+        {isError && <p className="text-red-400 text-center">{error.message}</p>}
+
         <Formik
           initialValues={{ email: "", password: "" }}
           validate={(values) => {
@@ -27,8 +27,12 @@ const Login = () => {
             if (!values.password) errors.password = "Password is required";
             return errors;
           }}
-          onSubmit={async (values, { setSubmitting }) => {
-            await loginUser(values);
+          onSubmit={(values, { setSubmitting }) => {
+            loginUser(values, {
+              onSuccess: () => {
+                router.push("/"); // Redirect on successful login
+              },
+            });
             setSubmitting(false);
           }}
         >
@@ -68,10 +72,10 @@ const Login = () => {
 
               <button
                 type="submit"
-                disabled={isSubmitting || loading}
+                disabled={isSubmitting || isLoading}
                 className="w-full py-2 font-semibold text-white bg-amber-500 hover:bg-amber-600 focus:outline-none cursor-pointer"
               >
-                {loading ? "Logging in..." : "Login"}
+                {isLoading ? "Logging in..." : "Login"}
               </button>
             </Form>
           )}

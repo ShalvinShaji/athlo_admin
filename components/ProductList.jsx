@@ -1,20 +1,26 @@
-"use client"; // Client component
+"use client";
 
+import { useFetchProducts } from "@/store/useProductStore";
 import useProductStore from "@/store/useProductStore";
-import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Sidebar from "./Sidebar"; // Import the Sidebar component
+import Sidebar from "./Sidebar";
+import Loading from "@/app/loading";
 
-export default function ProductList({ initialProducts }) {
-  const { products, fetchProducts, selectedCategory, getFilteredProducts } =
-    useProductStore();
+export default function ProductList() {
+  const { data: products = [], isLoading, error } = useFetchProducts();
+  const { selectedCategory } = useProductStore();
 
-  useEffect(() => {
-    if (products.length === 0) fetchProducts();
-  }, [products, fetchProducts]);
+  // Filter products based on selected category
+  const filteredProducts = selectedCategory
+    ? products.filter((product) => product.category === selectedCategory)
+    : products;
 
-  const productList = getFilteredProducts(useProductStore.getState());
+  if (isLoading) return <Loading />;
+  if (error)
+    return (
+      <p className="text-center mt-5 text-red-500">Failed to load products.</p>
+    );
 
   return (
     <div className="flex">
@@ -25,7 +31,7 @@ export default function ProductList({ initialProducts }) {
       <div className="flex-1 p-5 pt-[120px] ml-0 md:ml-64">
         <h1 className="text-3xl font-bold text-center mb-6">Products</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-10">
-          {productList.map((product, index) => (
+          {filteredProducts.map((product, index) => (
             <Link
               key={index}
               href={`/products/${product.id || index}`}
@@ -36,8 +42,8 @@ export default function ProductList({ initialProducts }) {
                   {product.image && (
                     <Image
                       src={product.image}
-                      width={20}
-                      height={50}
+                      width={100}
+                      height={100}
                       alt={product.name || "Product Image"}
                       className="object-contain h-full"
                     />
