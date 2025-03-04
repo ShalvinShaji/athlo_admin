@@ -1,7 +1,6 @@
 "use client";
-import { useState, useEffect } from "react";
 
-const AlertMessage = ({ type, message, onClose }) => {
+const ToastMessage = ({ type, message, onClose }) => {
   if (!message) return null;
 
   return (
@@ -18,4 +17,4 @@ const AlertMessage = ({ type, message, onClose }) => {
   );
 };
 
-export default AlertMessage;
+export default ToastMessage;

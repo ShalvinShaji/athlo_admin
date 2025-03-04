@@ -4,7 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import axios from "@/lib/axiosInstance";
 import Cookies from "js-cookie";
-import AlertMessage from "@/components/AlertMessage";
+import ToastMessage from "@/components/ToastMessage";
 
 const CreateProduct = () => {
   const [preview, setPreview] = useState(null);
@@ -59,7 +59,7 @@ const CreateProduct = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-[#1111] pt-[120px] relative">
       {/* Alert Message Component */}
-      <AlertMessage
+      <ToastMessage
         type={alert.type}
         message={alert.message}
         onClose={() => setAlert({ type: "", message: "" })}
