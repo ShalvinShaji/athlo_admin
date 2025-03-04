@@ -4,9 +4,19 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useMutation } from "@tanstack/react-query";
 import axios from "@/lib/axiosInstance";
 import Cookies from "js-cookie";
+import AlertMessage from "@/components/AlertMessage";
 
 const CreateProduct = () => {
   const [preview, setPreview] = useState(null);
+  const [alert, setAlert] = useState({ type: "", message: "" });
+
+  const showAlert = (type, message) => {
+    setAlert({ type, message });
+
+    setTimeout(() => {
+      setAlert({ type: "", message: "" });
+    }, 3000);
+  };
 
   // React Query mutation for creating a product
   const createProductMutation = useMutation({
@@ -22,7 +32,6 @@ const CreateProduct = () => {
         productData,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -31,10 +40,10 @@ const CreateProduct = () => {
       return response.data;
     },
     onSuccess: () => {
-      alert("Product created successfully!");
+      showAlert("success", "Product created successfully!");
     },
     onError: (error) => {
-      alert(`Error: ${error.message}`);
+      showAlert("error", `Error: ${error.message}`);
     },
   });
 
@@ -48,7 +57,14 @@ const CreateProduct = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#1111] pt-[120px]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-[#1111] pt-[120px] relative">
+      {/* Alert Message Component */}
+      <AlertMessage
+        type={alert.type}
+        message={alert.message}
+        onClose={() => setAlert({ type: "", message: "" })}
+      />
+
       <h1 className="text-3xl font-bold text-white mb-6">Create Product</h1>
 
       <div className="flex w-[80%] p-8 bg-[#2222] shadow-lg gap-6">
@@ -71,13 +87,15 @@ const CreateProduct = () => {
             }}
             onSubmit={async (values, { setSubmitting, resetForm }) => {
               try {
-                const formData = new FormData();
-                formData.append("name", values.name);
-                formData.append("category", values.category);
-                formData.append("description", values.description);
-                formData.append("price", values.price);
+                const productData = {
+                  name: values.name,
+                  category: values.category,
+                  description: values.description,
+                  price: values.price,
+                };
 
-                createProductMutation.mutate(formData);
+                createProductMutation.mutate(productData);
+
                 resetForm();
                 setPreview(null);
               } catch (error) {
