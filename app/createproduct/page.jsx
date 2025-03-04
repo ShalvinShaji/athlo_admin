@@ -151,7 +151,7 @@ const CreateProduct = () => {
         {/* Image Preview */}
         <div className="flex-1 flex items-center justify-center p-6 bg-zinc-800 rounded-md shadow-md">
           {preview ? (
-            <img src={preview} alt="Product Preview" className="w-full h-90 object-cover rounded-lg" />
+            <img src={preview} alt="Product Preview" className="w-full h-90 object-contain rounded-lg" />
           ) : (
             <span className="text-gray-400">Image Preview</span>
           )}

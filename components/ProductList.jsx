@@ -34,7 +34,8 @@ export default function ProductList() {
           {filteredProducts.map((product, index) => (
             <Link
               key={index}
-              href={`/products/${product.id || index}`}
+              // href={`/products/${product.id || index}`}
+              href="/"
               className="block"
             >
               <div className="bg-white shadow-md rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg p-4 flex flex-col min-h-[400px]">
