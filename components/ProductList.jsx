@@ -6,10 +6,27 @@ import Link from "next/link";
 import Image from "next/image";
 import Sidebar from "./Sidebar";
 import Loading from "@/app/loading";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 export default function ProductList() {
   const { data: products = [], isLoading, error } = useFetchProducts();
   const { selectedCategory } = useProductStore();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLoginStatus = () => {
+      const token = Cookies.get("adminToken");
+      setIsLoggedIn(!!token);
+    };
+
+    checkLoginStatus();
+    window.addEventListener("storage", checkLoginStatus);
+
+    return () => {
+      window.removeEventListener("storage", checkLoginStatus);
+    };
+  }, []);
 
   const handleDelete = (id) => {
     console.log(`Deleting product with ID: ${id}`);
@@ -38,7 +55,7 @@ export default function ProductList() {
 
       {/* Product List */}
       <div className="flex-1 p-5 pt-[120px] ml-0 md:ml-64">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 p-10">
           {filteredProducts.map((product, index) => (
             <div
               key={index}
@@ -65,7 +82,7 @@ export default function ProductList() {
                   {product.description || "No description available."}
                 </p>
 
-                <div className="flex justify-between items-center mt-auto text-gray-300">
+                <div className="flex justify-between items-center mt-10 text-gray-300">
                   <p className="text-lg font-bold text-green-400">
                     {product.price ? `₹${product.price}` : "Price Unavailable"}
                   </p>
@@ -76,20 +93,22 @@ export default function ProductList() {
                 </div>
 
                 {/* Buttons */}
-                <div className="flex justify-between mt-4">
-                  <button
-                    onClick={() => handleUpdate(product.id)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer"
-                  >
-                    Update
-                  </button>
-                  <button
-                    onClick={() => handleDelete(product.id)}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer"
-                  >
-                    Delete
-                  </button>
-                </div>
+                {isLoggedIn && (
+                  <div className="flex justify-between mt-4">
+                    <button
+                      onClick={() => handleUpdate(product._id)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer"
+                    >
+                      Update
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product._id)}
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
