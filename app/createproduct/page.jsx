@@ -147,7 +147,7 @@ const CreateProduct = () => {
                     <Field
                       as="select"
                       name="category"
-                      className="w-full p-2 mt-1 bg-gray-700 text-gray-300 hover:text-white"
+                      className="w-full p-3 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
                     >
                       <option value="">Select a category</option>
                       {categories.map((category, index) => (
