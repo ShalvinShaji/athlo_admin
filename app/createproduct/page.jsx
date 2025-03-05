@@ -45,7 +45,7 @@ const CreateProduct = () => {
             initialValues={{
               name: "",
               category: "",
-              newCategory: "", 
+              newCategory: "",
               description: "",
               price: "",
               image: null,
@@ -119,7 +119,7 @@ const CreateProduct = () => {
                   <button
                     type="button"
                     onClick={() => setIsNewCategory(!isNewCategory)}
-                    className={`w-12 h-6 flex items-center bg-gray-600 rounded-full p-1 transition ${
+                    className={`w-12 h-6 flex items-center bg-gray-600 rounded-full p-1 transition cursor-pointer ${
                       isNewCategory ? "bg-green-500" : "bg-gray-500"
                     }`}
                   >
@@ -147,7 +147,7 @@ const CreateProduct = () => {
                     <Field
                       as="select"
                       name="category"
-                      className="w-full p-3 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
+                      className="w-full p-3 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none cursor-pointer"
                     >
                       <option value="">Select a category</option>
                       {categories.map((category, index) => (
@@ -206,7 +206,7 @@ const CreateProduct = () => {
                   <input
                     type="file"
                     accept="image/*"
-                    className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
+                    className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none cursor-pointer"
                     onChange={(event) =>
                       handleImageChange(event, setFieldValue)
                     }
