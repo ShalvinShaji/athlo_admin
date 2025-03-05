@@ -83,13 +83,14 @@ export default function ProductList() {
       <Sidebar />
 
       <div className="flex-1 p-5 pt-[120px] ml-0 md:ml-64">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 p-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-10 bg-[#111]">
           {filteredProducts.map((product) => (
             <div
               key={product._id}
-              className="bg-[#222] shadow-lg rounded-xl overflow-hidden p-4 flex flex-col min-h-[450px] text-white"
+              className="bg-[#111] border border-[#333] shadow-lg rounded-xl overflow-hidden p-4 flex flex-col min-h-[400px] text-white hover:shadow-xl transition-shadow duration-300"
             >
-              <div className="flex justify-center items-center h-50 bg-[#333] rounded-lg">
+              {/* Product Image */}
+              <div className="flex justify-center items-center h-48  rounded-lg overflow-hidden">
                 {product.image && (
                   <Image
                     src={product.image}
@@ -101,35 +102,35 @@ export default function ProductList() {
                 )}
               </div>
 
+              {/* Product Details */}
               <div className="flex flex-col flex-grow p-4">
-                <h2 className="text-lg font-semibold mb-2 text-gray-200 text-center">
+                <h2 className="text-md font-extralight mb-2 text-gray-100 text-center truncate">
                   {product.name}
                 </h2>
-                <p className="text-gray-400 text-sm text-center">
-                  {product.description || "No description available."}
-                </p>
 
-                <div className="flex justify-between items-center mt-auto text-gray-300">
+                {/* Price and Rating */}
+                <div className="flex justify-between items-center mt-auto">
                   <p className="text-lg font-bold text-green-400">
                     {product.price ? `₹${product.price}` : "Price Unavailable"}
                   </p>
-                  <span className="text-sm text-yellow-400">
+                  <span className="text-sm text-yellow-400 flex items-center">
                     ⭐ {product.rating?.rate || "N/A"} (
                     {product.rating?.count || 0})
                   </span>
                 </div>
 
+                {/* Update and Delete Buttons (Visible only when logged in) */}
                 {isLoggedIn && (
-                  <div className="flex justify-between mt-4">
+                  <div className="flex justify-between gap-4 mt-4">
                     <button
                       onClick={() => handleUpdate(product._id)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer"
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer flex-1"
                     >
                       Update
                     </button>
                     <button
                       onClick={() => handleDelete(product._id)}
-                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer"
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer flex-1"
                       disabled={deleteProductMutation.isLoading}
                     >
                       {deleteProductMutation.isLoading

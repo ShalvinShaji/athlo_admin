@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className=" text-white py-6 mt-10">
+    <footer className=" text-white py-6 mt-10 z-900 h-[100px]">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-6">
         <div className="text-xl font-bold">
           <Link href="/">Athlo</Link>
@@ -36,7 +36,7 @@ const Footer = () => {
           >
             x
           </a>
-        
+
           <a
             href="https://instagram.com"
             target="_blank"
