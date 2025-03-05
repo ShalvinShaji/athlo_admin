@@ -6,6 +6,7 @@ import Loading from "@/app/loading";
 import Cookies from "js-cookie";
 import ToastMessage from "@/components/ToastMessage";
 import CustomModal from "@/components/CustomModal"; // Import Generic Modal
+import Image from "next/image";
 
 export default function ProductList() {
   const { data: products = [], isLoading, error } = useFetchProducts();

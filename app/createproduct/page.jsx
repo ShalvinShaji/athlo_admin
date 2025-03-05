@@ -45,7 +45,7 @@ const CreateProduct = () => {
             initialValues={{
               name: "",
               category: "",
-              newCategory: "", // New category field
+              newCategory: "", 
               description: "",
               price: "",
               image: null,
