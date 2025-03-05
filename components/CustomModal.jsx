@@ -31,13 +31,13 @@ export default function CustomModal({
         <div className="flex justify-center gap-4 mt-4">
           <button
             onClick={onConfirm}
-            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition"
+            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition cursor-pointer"
           >
             {confirmText}
           </button>
           <button
             onClick={onClose}
-            className="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg transition"
+            className="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded-lg transition cursor-pointer"
           >
             Cancel
           </button>
