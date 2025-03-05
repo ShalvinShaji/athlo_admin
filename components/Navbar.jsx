@@ -98,15 +98,6 @@ export default function Navbar() {
                   Orders
                 </Link>
               )}
-
-              <Link
-                href="/jersey"
-                className={`text-base font-medium hover:opacity-70 transition-opacity ${
-                  isScrolled ? "text-black" : "text-white"
-                }`}
-              >
-                Jersey
-              </Link>
             </div>
 
             {/* Desktop Right Icons */}
@@ -211,13 +202,6 @@ export default function Navbar() {
                   Orders
                 </Link>
               )}
-
-              <Link
-                href="/jersey"
-                className="text-base font-medium hover:opacity-70 transition-opacity text-black"
-              >
-                Jersey
-              </Link>
 
               <div className="flex items-center space-x-6 pt-6 border-t border-gray-200">
                 {isLoggedIn ? (
