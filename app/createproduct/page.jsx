@@ -119,13 +119,15 @@ const CreateProduct = () => {
                   <button
                     type="button"
                     onClick={() => setIsNewCategory(!isNewCategory)}
-                    className={`px-3 py-1 text-sm font-semibold rounded transition cursor-pointer ${
-                      isNewCategory
-                        ? "bg-green-500 text-white"
-                        : "bg-gray-500 text-gray-300"
+                    className={`w-12 h-6 flex items-center bg-gray-600 rounded-full p-1 transition ${
+                      isNewCategory ? "bg-green-500" : "bg-gray-500"
                     }`}
                   >
-                    {isNewCategory ? "Yes" : "No"}
+                    <div
+                      className={`w-5 h-5 bg-white rounded-full shadow-md transform transition ${
+                        isNewCategory ? "translate-x-5" : "translate-x-0"
+                      }`}
+                    />
                   </button>
                 </div>
 
