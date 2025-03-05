@@ -1,28 +1,20 @@
-"use client";
-
+import { useState, useEffect } from "react";
 import { useFetchProducts, useDeleteProduct } from "@/store/useProductStore";
 import useProductStore from "@/store/useProductStore";
-import Link from "next/link";
-import Image from "next/image";
 import Sidebar from "./Sidebar";
 import Loading from "@/app/loading";
-import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import ToastMessage from "@/components/ToastMessage";
+import CustomModal from "@/components/CustomModal"; // Import Generic Modal
 
 export default function ProductList() {
   const { data: products = [], isLoading, error } = useFetchProducts();
   const { selectedCategory } = useProductStore();
-  const [alert, setAlert] = useState({ type: "", message: "" });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [modal, setModal] = useState({ isOpen: false, action: null }); // Track modal state
   const deleteProductMutation = useDeleteProduct();
-
-  const showAlert = (type, message) => {
-    setAlert({ type, message });
-    setTimeout(() => {
-      setAlert({ type: "", message: "" });
-    }, 3000);
-  };
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -32,34 +24,42 @@ export default function ProductList() {
 
     checkLoginStatus();
     window.addEventListener("storage", checkLoginStatus);
-
-    return () => {
-      window.removeEventListener("storage", checkLoginStatus);
-    };
+    return () => window.removeEventListener("storage", checkLoginStatus);
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?"))
-      return;
+  const showAlert = (type, message) => {
+    setAlert({ type, message });
+    setTimeout(() => setAlert({ type: "", message: "" }), 3000);
+  };
+
+  const handleDelete = (id) => {
+    setSelectedProduct(id);
+    setModal({ isOpen: true, action: "delete" });
+  };
+
+  const confirmDelete = async () => {
+    setModal({ isOpen: false, action: null });
 
     try {
-      deleteProductMutation.mutate(id, {
-        onSuccess: () => {
-          showAlert("success", "Product deleted successfully!");
-        },
-        onError: (error) => {
-          showAlert("error", `Error: ${error.message}`);
-        },
+      deleteProductMutation.mutate(selectedProduct, {
+        onSuccess: () => showAlert("success", "Product deleted successfully!"),
+        onError: (error) => showAlert("error", `Error: ${error.message}`),
       });
     } catch (error) {
       console.error("Failed to delete product:", error);
-      alert("Error deleting product.");
+      showAlert("error", "Error deleting product.");
     }
   };
 
   const handleUpdate = (id) => {
-    console.log(`Updating product with ID: ${id}`);
-    // Implement update logic here (e.g., open a modal for editing)
+    setSelectedProduct(id);
+    setModal({ isOpen: true, action: "update" });
+  };
+
+  const confirmUpdate = () => {
+    console.log(`Updating product with ID: ${selectedProduct}`);
+    setModal({ isOpen: false, action: null });
+    showAlert("success", "Product updated successfully!");
   };
 
   const filteredProducts = selectedCategory
@@ -79,16 +79,14 @@ export default function ProductList() {
         message={alert.message}
         onClose={() => setAlert({ type: "", message: "" })}
       />
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Product List */}
       <div className="flex-1 p-5 pt-[120px] ml-0 md:ml-64">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 p-10">
-          {filteredProducts.map((product, index) => (
+          {filteredProducts.map((product) => (
             <div
-              key={index}
-              className="bg-[#222] shadow-lg rounded-xl overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl p-4 flex flex-col min-h-[450px] text-white"
+              key={product._id}
+              className="bg-[#222] shadow-lg rounded-xl overflow-hidden p-4 flex flex-col min-h-[450px] text-white"
             >
               <div className="flex justify-center items-center h-50 bg-[#333] rounded-lg">
                 {product.image && (
@@ -106,12 +104,11 @@ export default function ProductList() {
                 <h2 className="text-lg font-semibold mb-2 text-gray-200 text-center">
                   {product.name}
                 </h2>
-
                 <p className="text-gray-400 text-sm text-center">
                   {product.description || "No description available."}
                 </p>
 
-                <div className="flex justify-between items-center mt-10 text-gray-300">
+                <div className="flex justify-between items-center mt-auto text-gray-300">
                   <p className="text-lg font-bold text-green-400">
                     {product.price ? `₹${product.price}` : "Price Unavailable"}
                   </p>
@@ -121,7 +118,6 @@ export default function ProductList() {
                   </span>
                 </div>
 
-                {/* Buttons */}
                 {isLoggedIn && (
                   <div className="flex justify-between mt-4">
                     <button
@@ -146,6 +142,21 @@ export default function ProductList() {
           ))}
         </div>
       </div>
+
+      <CustomModal
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ isOpen: false, action: null })}
+        onConfirm={modal.action === "delete" ? confirmDelete : confirmUpdate}
+        title={
+          modal.action === "delete" ? "Confirm Deletion" : "Confirm Update"
+        }
+        message={
+          modal.action === "delete"
+            ? "Are you sure you want to delete this product?"
+            : "Are you sure you want to update this product?"
+        }
+        confirmText={modal.action === "delete" ? "Yes, Delete" : "Yes, Update"}
+      />
     </div>
   );
 }
