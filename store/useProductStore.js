@@ -59,6 +59,29 @@ export const useCreateProduct = () => {
   });
 };
 
+// Delete product  (React Query Mutation)
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (productId) => {
+      const token = Cookies.get("adminToken");
+      if (!token) throw new Error("Admin token not found. Please log in.");
+
+      const response = await api.delete(`/products/product/delete/${productId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["products"]); // Refetch products after deletion
+    },
+  });
+};
+
 // Admin login (React Query Mutation)
 export const useLoginUser = () => {
   return useMutation({

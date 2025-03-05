@@ -1,6 +1,6 @@
 "use client";
 
-import { useFetchProducts } from "@/store/useProductStore";
+import { useFetchProducts, useDeleteProduct } from "@/store/useProductStore";
 import useProductStore from "@/store/useProductStore";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,11 +8,21 @@ import Sidebar from "./Sidebar";
 import Loading from "@/app/loading";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import ToastMessage from "@/components/ToastMessage";
 
 export default function ProductList() {
   const { data: products = [], isLoading, error } = useFetchProducts();
   const { selectedCategory } = useProductStore();
+  const [alert, setAlert] = useState({ type: "", message: "" });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const deleteProductMutation = useDeleteProduct();
+
+  const showAlert = (type, message) => {
+    setAlert({ type, message });
+    setTimeout(() => {
+      setAlert({ type: "", message: "" });
+    }, 3000);
+  };
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -28,14 +38,28 @@ export default function ProductList() {
     };
   }, []);
 
-  const handleDelete = (id) => {
-    console.log(`Deleting product with ID: ${id}`);
-    // Add delete logic here
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
+
+    try {
+      deleteProductMutation.mutate(id, {
+        onSuccess: () => {
+          showAlert("success", "Product deleted successfully!");
+        },
+        onError: (error) => {
+          showAlert("error", `Error: ${error.message}`);
+        },
+      });
+    } catch (error) {
+      console.error("Failed to delete product:", error);
+      alert("Error deleting product.");
+    }
   };
 
   const handleUpdate = (id) => {
     console.log(`Updating product with ID: ${id}`);
-    // Add update logic here
+    // Implement update logic here (e.g., open a modal for editing)
   };
 
   const filteredProducts = selectedCategory
@@ -50,6 +74,11 @@ export default function ProductList() {
 
   return (
     <div className="flex bg-[#111] min-h-screen">
+      <ToastMessage
+        type={alert.type}
+        message={alert.message}
+        onClose={() => setAlert({ type: "", message: "" })}
+      />
       {/* Sidebar */}
       <Sidebar />
 
@@ -104,8 +133,11 @@ export default function ProductList() {
                     <button
                       onClick={() => handleDelete(product._id)}
                       className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-transform transform hover:scale-105 cursor-pointer"
+                      disabled={deleteProductMutation.isLoading}
                     >
-                      Delete
+                      {deleteProductMutation.isLoading
+                        ? "Deleting..."
+                        : "Delete"}
                     </button>
                   </div>
                 )}
