@@ -13,103 +13,66 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-
-const orders = [
-  {
-    _id: "64f1b2c8e4b0d8a8d8f8e8f8",
-    user: "JohnDoe123",
-    items: [
-      { product: "Laptop", quantity: 1, price: 1200 },
-      { product: "Mouse", quantity: 2, price: 25 },
-    ],
-    totalAmount: 1250,
-    createdAt: "2023-09-03T12:34:56.789Z",
-    delivered: true,
-    cancelled: false,
-    deleted: false,
-  },
-  {
-    _id: "64f1b2c8e4b0d8a8d8f8e8f2",
-    user: "Shalvin",
-    items: [
-      { product: "Phone", quantity: 1, price: 800 },
-      { product: "Headphones", quantity: 1, price: 100 },
-    ],
-    totalAmount: 900,
-    createdAt: "2023-09-03T13:34:56.789Z",
-    delivered: false,
-    cancelled: false,
-    deleted: false,
-  },
-  {
-    _id: "64f1b2c8e4b0d8a8d8f8e8f10",
-    user: "King",
-    items: [
-      { product: "Phone", quantity: 1, price: 800 },
-      { product: "Headphones", quantity: 1, price: 100 },
-    ],
-    totalAmount: 900,
-    createdAt: "2023-09-03T13:34:56.789Z",
-    delivered: false,
-    cancelled: true,
-    deleted: false,
-  },
-  {
-    _id: "64f1b2c8e4b0d8a8d8f8e8f10",
-    user: "King",
-    items: [
-      { product: "Phone", quantity: 1, price: 800 },
-      { product: "Headphones", quantity: 1, price: 100 },
-    ],
-    totalAmount: 900,
-    createdAt: "2023-09-03T13:34:56.789Z",
-    delivered: false,
-    cancelled: false,
-    deleted: true,
-  },
-];
+import ToastMessage from "@/components/ToastMessage";
+import Loading from "@/app/loading";
+import CustomModal from "@/components/CustomModal";
+import { useDeliverOrder, useFetchOrderById } from "@/store/useProductStore";
 
 export default function OrderDetailPage() {
   const params = useParams();
   const { orderId } = params;
+  const [alert, setAlert] = useState({ type: "", message: "" });
+  const [modal, setModal] = useState({ isOpen: false, action: null });
+  const OrderDeliveryMutation = useDeliverOrder();
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const { data: order, isLoading, error } = useFetchOrderById(orderId);
 
-  const [order, setOrder] = useState(
-    orders.find((order) => order._id === orderId)
-  );
+  if (isLoading) return <Loading />;
+  if (error) return <p className="text-red-500">Error fetching order.</p>;
 
-  if (!order) {
-    return <div className="text-white text-center mt-20">Order not found!</div>;
-  }
+  const showAlert = (type, message) => {
+    setAlert({ type, message });
+    setTimeout(() => setAlert({ type: "", message: "" }), 3000);
+  };
 
-  const markAsDelivered = () => {
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      delivered: true,
-      cancelled: false,
-      deleted: false,
-    }));
+  const handleOrderDelivery = () => {
+    setSelectedOrder(orderId);
+    setModal({ isOpen: true, action: "update" });
+    console.log(`Marking order ${orderId} as delivered`);
+  };
+
+  const confirmOderDelivery = async () => {
+    setModal({ isOpen: false, action: null });
+
+    try {
+      OrderDeliveryMutation.mutate(selectedOrder, {
+        onSuccess: () =>
+          showAlert("success", "Order marked as delivered successfully!"),
+        onError: (error) => showAlert("error", `Error: ${error.message}`),
+      });
+    } catch (error) {
+      console.error("Failed to mark order as delivered:", error);
+      showAlert("error", "Error while marking order as delivered.");
+    }
   };
 
   // Function to cancel order
   const cancelOrder = () => {
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      delivered: false,
-      cancelled: true,
-      deleted: false,
-    }));
+    console.log(`Canceling order ${orderId}`);
   };
 
   // Function to delete order
   const deleteOrder = () => {
-    setOrder((prevOrder) => ({
-      ...prevOrder,
-      deleted: true,
-    }));
+    console.log(`Deleting order ${orderId}`);
   };
 
   return (
     <div className="min-h-screen bg-[#111] text-white pt-28 px-6">
+      <ToastMessage
+        type={alert.type}
+        message={alert.message}
+        onClose={() => setAlert({ type: "", message: "" })}
+      />
       <h1 className="text-3xl font-bold text-center mb-6">Order Details</h1>
       <div className="bg-[#222] shadow-lg rounded-lg p-6 w-full border border-gray-600">
         <h2 className="text-lg font-semibold flex items-center gap-2">
@@ -163,13 +126,13 @@ export default function OrderDetailPage() {
       <div className="flex flex-wrap gap-4 justify-center mt-6">
         {!order.delivered && !order.cancelled && !order.deleted && (
           <button
-            onClick={markAsDelivered}
+            onClick={() => handleOrderDelivery(order._id)}
             className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-500 transition cursor-pointer"
           >
             Mark as Delivered
           </button>
         )}
-        {!order.delivered && !order.cancelled && !order.deleted && (
+        {/* {!order.delivered && !order.cancelled && !order.deleted && (
           <button
             onClick={cancelOrder}
             className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-500 transition cursor-pointer"
@@ -184,7 +147,7 @@ export default function OrderDetailPage() {
           >
             Delete Order
           </button>
-        )}
+        )} */}
       </div>
 
       <Link
@@ -193,6 +156,26 @@ export default function OrderDetailPage() {
       >
         <ArrowLeft size={18} /> Back to All Orders
       </Link>
+      <CustomModal
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ isOpen: false, action: null })}
+        onConfirm={
+          modal.action === "update" ? confirmOderDelivery : cancelOrder
+        }
+        title={
+          modal.action === "update"
+            ? "Confirm Order Delivery"
+            : "Confirm Order Cancellation"
+        }
+        message={
+          modal.action === "update"
+            ? "Are you sure you want to mark this order as delivered?"
+            : "Are you sure you want to cancel this product?"
+        }
+        confirmText={
+          modal.action === "update" ? "Yes, Delivered" : "Yes, Cancel"
+        }
+      />
     </div>
   );
 }

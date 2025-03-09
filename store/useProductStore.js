@@ -22,6 +22,35 @@ export const useFetchProducts = () => {
     },
   });
 };
+export const useFetchOrders = () => {
+  return useQuery({
+    queryKey: ["orders"],
+
+    queryFn: async () => {
+      const token = Cookies.get("adminToken");
+      if (!token) {
+        throw new Error("Admin token not found. Please log in.");
+      }
+
+      try {
+        const response = await api.get("/orders", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        return response.data;
+      } catch (error) {
+        throw new Error(
+          error.response?.data?.message || "Failed to fetch orders."
+        );
+      }
+    },
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+  });
+};
 
 // Fetch a product by ID (React Query)
 export const useFetchProductById = (id) => {
@@ -68,11 +97,14 @@ export const useDeleteProduct = () => {
       const token = Cookies.get("adminToken");
       if (!token) throw new Error("Admin token not found. Please log in.");
 
-      const response = await api.delete(`/products/product/delete/${productId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.delete(
+        `/products/product/delete/${productId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       return response.data;
     },
@@ -98,4 +130,54 @@ export const useLoginUser = () => {
   });
 };
 
+const fetchOrderById = async (orderId) => {
+  if (!orderId) throw new Error("Order ID is required.");
+
+  const token = Cookies.get("adminToken");
+  if (!token) throw new Error("Admin token not found. Please log in.");
+
+  const response = await api.get(`/orders/${orderId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+export const useFetchOrderById = (orderId) => {
+  return useQuery({
+    queryKey: ["order", orderId], // Cache key includes orderId
+    queryFn: () => fetchOrderById(orderId),
+    enabled: !!orderId,
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false, // Prevents refetching on window focus
+    keepPreviousData: true, // Keeps previous data while fetching new
+  });
+};
+
 export default useProductStore;
+
+export const useDeliverOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (orderId) => {
+      const token = Cookies.get("adminToken");
+      if (!token) throw new Error("Admin token not found. Please log in.");
+
+      const response = await api.post(`/orders/deliver/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // return response.data;
+      console.log(response.data);
+      
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["orderId"]); // Refetch products after updating
+    },
+  });
+};

@@ -10,46 +10,22 @@ import {
   Trash2,
   Ban,
 } from "lucide-react";
+import { useFetchOrders } from "@/store/useProductStore";
+import Loading from "../loading";
 
 export default function OrderDetailsPage() {
+  const { data: orders = [], isLoading, error } = useFetchOrders();
   const [filter, setFilter] = useState("all");
+  console.log(orders);
 
-  const orders = [
-    {
-      _id: "64f1b2c8e4b0d8a8d8f8e8f8",
-      user: "JohnDoe123",
-      totalAmount: 1250,
-      delivered: true,
-      cancelled: false,
-      deleted: false,
-    },
-    {
-      _id: "64f1b2c8e4b0d8a8d8f8e8f2",
-      user: "Shalvin",
-      totalAmount: 900,
-      delivered: false,
-      cancelled: false,
-      deleted: false,
-    },
-    {
-      _id: "64f1b2c8e4b0d8a8d8f8e8f10",
-      user: "Bob789",
-      totalAmount: 450,
-      delivered: false,
-      cancelled: true,
-      deleted: false,
-    },
-    {
-      _id: "64f1b2c8e4b0d8a8d8f8e8f11",
-      user: "Charlie123",
-      totalAmount: 300,
-      delivered: false,
-      cancelled: false,
-      deleted: true,
-    },
-  ];
+  if (isLoading) return <Loading />;
+  if (error)
+    return (
+      <p className="text-center mt-5 pt-[120px] text-red-500">
+        Failed to load orders.
+      </p>
+    );
 
-  // Filtered Orders
   const filteredOrders = orders.filter((order) => {
     if (filter === "all") return true;
     if (filter === "delivered") return order.delivered;
