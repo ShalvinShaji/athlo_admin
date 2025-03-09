@@ -37,7 +37,7 @@ export default function OrderDetailsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#111] text-white pt-28 px-6">
+    <div className="min-h-screen bg-[#111] text-white pt-[120px] p-6">
       <h1 className="text-3xl font-bold text-center mb-4">All Orders</h1>
 
       <div className="flex justify-end mb-4">
@@ -54,7 +54,7 @@ export default function OrderDetailsPage() {
         </select>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         {filteredOrders.length > 0 ? (
           filteredOrders.map((order) => (
             <Link key={order._id} href={`/orders/${order._id}`}>

@@ -3,18 +3,15 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <footer className=" text-white py-6 mt-10 z-900 h-[100px]">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-6">
-        <div className="text-xl font-bold">
+    <footer className=" text-white py-6 z-900 h-[150px] flex flex-col justify-center items-center p-8">
+      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center ">
+        <div className="text-xl font-bold mt-6">
           <Link href="/">Athlo</Link>
         </div>
 
         <div className="flex space-x-6 mt-4 md:mt-0 items-center jus">
           <Link href="/" className="hover:text-gray-400">
             Home
-          </Link>
-          <Link href="/" className="hover:text-gray-400">
-            Products
           </Link>
           <Link href="/" className="hover:text-gray-400">
             Jersey

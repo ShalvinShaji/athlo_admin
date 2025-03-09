@@ -105,27 +105,27 @@ export default function OrderDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#111] text-white pt-28 px-6">
+    <div className="min-h-screen bg-[#111] text-white pt-[110px] p-6">
       <ToastMessage
         type={alert.type}
         message={alert.message}
         onClose={() => setAlert({ type: "", message: "" })}
       />
       <h1 className="text-3xl font-bold text-center mb-6">Order Details</h1>
-      <div className="bg-[#222] shadow-lg rounded-lg p-6 w-full border border-gray-600">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
+      <div className="bg-[#222] shadow-lg rounded-lg w-full border border-gray-600 p-6">
+        <h2 className="text-lg font-semibold flex items-center gap-3 mb-2">
           <Package size={20} /> Order ID: {order._id}
         </h2>
-        <p className="text-gray-300 flex items-center gap-2 mt-2">
+        <p className="text-gray-300 flex items-center gap-3 mb-2">
           <User size={18} /> <strong>User:</strong> {order.user}
         </p>
-        <p className="text-gray-300 flex items-center gap-2 mt-2">
+        <p className="text-gray-300 flex items-center gap-3 mb-2">
           <DollarSign size={18} /> <strong>Total Amount:</strong> $
           {order.totalAmount}
         </p>
 
         {/* Status Section */}
-        <p className="flex items-center gap-2 mt-2">
+        <p className="flex items-center gap-3 mb-2">
           {order.delivered ? (
             <CheckCircle size={18} className="text-green-400" />
           ) : order.cancelled ? (
@@ -146,14 +146,14 @@ export default function OrderDetailPage() {
         </p>
 
         {/* Items Section */}
-        <h3 className="text-md font-semibold mt-4 flex items-center gap-2">
+        <h3 className="text-md font-semibold mt-4 flex items-center gap-3">
           <List size={18} /> Items:
         </h3>
-        <div className="flex flex-wrap gap-4 mt-4">
+        <div className="flex flex-wrap mt-4 gap-3">
           {order.items.map((item, index) => (
             <div
               key={index}
-              className="shadow-lg rounded-lg overflow-hidden border flex flex-col items-center justify-center h-[300px] w-[200px] p-4"
+              className="shadow-lg rounded-lg overflow-hidden border flex flex-col items-center justify-center h-[300px] w-[200px] p-6 "
             >
               <div className="relative w-[150px] h-[150px]">
                 <Image
@@ -176,7 +176,7 @@ export default function OrderDetailPage() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-4 justify-center mt-6">
+      <div className="flex flex-wrap  justify-center gap-3 mt-6">
         {!order.delivered && !order.cancelled && !order.deleted && (
           <button
             onClick={() => handleOrderDelivery(order._id)}
@@ -203,12 +203,6 @@ export default function OrderDetailPage() {
         )}
       </div>
 
-      <Link
-        href="/orders"
-        className="text-center text-blue-400 font-medium mt-6 hover:underline flex items-center justify-center gap-2"
-      >
-        <ArrowLeft size={18} /> Back to All Orders
-      </Link>
       <CustomModal
         isOpen={modal.isOpen}
         onClose={() => setModal({ isOpen: false, action: null })}
