@@ -1,4 +1,7 @@
-export default async function OrderDetailsPage() {
+import Link from "next/link";
+import { Package, User, DollarSign } from "lucide-react";
+
+export default function OrderDetailsPage() {
   const orders = [
     {
       _id: "64f1b2c8e4b0d8a8d8f8e8f8",
@@ -20,55 +23,29 @@ export default async function OrderDetailsPage() {
       totalAmount: 900,
       createdAt: "2023-09-03T13:34:56.789Z",
     },
-    {
-      _id: "64f1b2c8e4b0d8a8d8f8e8fa",
-      user: "Bob789",
-      items: [
-        { product: "Tablet", quantity: 1, price: 600 },
-        { product: "Keyboard", quantity: 1, price: 50 },
-      ],
-      totalAmount: 650,
-      createdAt: "2023-09-03T14:34:56.789Z",
-    },
   ];
 
   return (
-    <div className="pt-28 px-6">
+    <div className="min-h-screen bg-[#111] text-white pt-28 px-6">
       <h1 className="text-3xl font-bold text-center mb-6">All Orders</h1>
-      <div className="flex flex-grow gap-6 items-center justify-around">
+      <div className="flex flex-col gap-3">
         {orders.map((order) => (
-          <div
-            key={order._id}
-            className="bg-white shadow-md rounded-lg p-6 max-w-md w-full border border-gray-200"
-          >
-            <h2 className="text-lg font-semibold text-gray-700">
-              Order ID: {order._id}
-            </h2>
-            <p className="text-gray-600">
-              <strong>User:</strong> {order.user}
-            </p>
-            <p className="text-gray-600">
-              <strong>Total Amount:</strong> ${order.totalAmount}
-            </p>
-            <h3 className="text-md font-semibold mt-4">Items:</h3>
-            <ul className="list-disc list-inside mt-2 space-y-1">
-              {order.items.map((item, index) => (
-                <li key={index} className="text-zinc-700">
-                  <strong>Product:</strong> {item.product} |{" "}
-                  <strong>Quantity:</strong> {item.quantity} |{" "}
-                  <strong>Price:</strong> ${item.price}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <Link key={order._id} href={`/orders/${order._id}`}>
+            <div className="bg-[#222] shadow-lg rounded-lg p-6 w-full border border-gray-600 hover:bg-[#333] transition cursor-pointer">
+              <h2 className="text-lg font-semibold flex items-center gap-2">
+                <Package size={20} /> Order ID: {order._id}
+              </h2>
+              <p className="text-gray-300 flex items-center gap-2 mt-2">
+                <User size={18} /> <strong>User:</strong> {order.user}
+              </p>
+              <p className="text-gray-300 flex items-center gap-2 mt-1">
+                <DollarSign size={18} /> <strong>Total Amount:</strong> $
+                {order.totalAmount}
+              </p>
+            </div>
+          </Link>
         ))}
       </div>
-      <a
-        href="/orders"
-        className="block text-center text-blue-600 font-medium mt-6 hover:underline"
-      >
-        Back to Orders
-      </a>
     </div>
   );
 }
