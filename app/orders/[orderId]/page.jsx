@@ -22,6 +22,7 @@ import {
   useDeliverOrder,
   useFetchOrderById,
 } from "@/store/useProductStore";
+import Image from "next/image";
 
 export default function OrderDetailPage() {
   const params = useParams();
@@ -148,15 +149,30 @@ export default function OrderDetailPage() {
         <h3 className="text-md font-semibold mt-4 flex items-center gap-2">
           <List size={18} /> Items:
         </h3>
-        <ul className="list-disc list-inside mt-2 space-y-1 text-gray-400">
+        <div className="flex flex-wrap gap-4 mt-4">
           {order.items.map((item, index) => (
-            <li key={index}>
-              <strong>Product:</strong> {item.product} |{" "}
-              <strong>Quantity:</strong> {item.quantity} |{" "}
-              <strong>Price:</strong> ${item.price}
-            </li>
+            <div
+              key={index}
+              className="shadow-lg rounded-lg overflow-hidden border flex flex-col items-center justify-center h-[300px] w-[200px] p-4"
+            >
+              <div className="relative w-[150px] h-[150px]">
+                <Image
+                  src={item.product.image}
+                  alt={item.product.name}
+                  layout="fill"
+                  objectFit="contain"
+                />
+              </div>
+              <div className="text-center mt-4">
+                <h2 className="text-lg ">{item.product.name}</h2>
+                <p className="text-gray-300">Quantity: {item.quantity}</p>
+                <p className="text-gray-300 font-bold">
+                  Price: ${item.product.price}
+                </p>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
 
       {/* Action Buttons */}
