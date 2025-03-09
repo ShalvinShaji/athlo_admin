@@ -188,3 +188,64 @@ export const useDeliverOrder = () => {
     },
   });
 };
+
+export const useCancelOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (orderId) => {
+      const token = Cookies.get("adminToken");
+      if (!token) throw new Error("Admin token not found. Please log in.");
+
+      const response = await api.patch(
+        `/orders/cancel/${orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["orderId"]);
+    },
+    onError: (error) => {
+      console.error("Error cancelling order:", error.message);
+      alert(error.message);
+    },
+  });
+};
+export const useDeleteOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (orderId) => {
+      const token = Cookies.get("adminToken");
+      if (!token) throw new Error("Admin token not found. Please log in.");
+
+      const response = await api.patch(
+        `/orders/delete/${orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["orderId"]);
+    },
+    onError: (error) => {
+      console.error("Error deleting order:", error.message);
+      alert(error.message);
+    },
+  });
+};

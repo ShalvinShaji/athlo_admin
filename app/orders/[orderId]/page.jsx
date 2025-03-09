@@ -16,7 +16,12 @@ import Link from "next/link";
 import ToastMessage from "@/components/ToastMessage";
 import Loading from "@/app/loading";
 import CustomModal from "@/components/CustomModal";
-import { useDeliverOrder, useFetchOrderById } from "@/store/useProductStore";
+import {
+  useCancelOrder,
+  useDeleteOrder,
+  useDeliverOrder,
+  useFetchOrderById,
+} from "@/store/useProductStore";
 
 export default function OrderDetailPage() {
   const params = useParams();
@@ -24,6 +29,8 @@ export default function OrderDetailPage() {
   const [alert, setAlert] = useState({ type: "", message: "" });
   const [modal, setModal] = useState({ isOpen: false, action: null });
   const OrderDeliveryMutation = useDeliverOrder();
+  const OrderCancelMutation = useCancelOrder();
+  const OrderDeleteMutation = useDeleteOrder();
   const [selectedOrder, setSelectedOrder] = useState(null);
   const { data: order, isLoading, error } = useFetchOrderById(orderId);
 
@@ -37,8 +44,7 @@ export default function OrderDetailPage() {
 
   const handleOrderDelivery = () => {
     setSelectedOrder(orderId);
-    setModal({ isOpen: true, action: "update" });
-    console.log(`Marking order ${orderId} as delivered`);
+    setModal({ isOpen: true, action: "deliver" });
   };
 
   const confirmOderDelivery = async () => {
@@ -55,10 +61,41 @@ export default function OrderDetailPage() {
       showAlert("error", "Error while marking order as delivered.");
     }
   };
+  const handleOrderCancel = () => {
+    setSelectedOrder(orderId);
+    setModal({ isOpen: true, action: "cancel" });
+  };
 
-  // Function to cancel order
-  const cancelOrder = () => {
-    console.log(`Canceling order ${orderId}`);
+  const confirmOderCancel = async () => {
+    setModal({ isOpen: false, action: null });
+
+    try {
+      OrderCancelMutation.mutate(selectedOrder, {
+        onSuccess: () => showAlert("success", "Order cancelled successfully!"),
+        onError: (error) => showAlert("error", `Error: ${error.message}`),
+      });
+    } catch (error) {
+      console.error("Failed to mark order as cancelled:", error);
+      showAlert("error", "Error while marking order as cancelled.");
+    }
+  };
+  const handleOrderDelete = () => {
+    setSelectedOrder(orderId);
+    setModal({ isOpen: true, action: "delete" });
+  };
+
+  const confirmOderDelete = async () => {
+    setModal({ isOpen: false, action: null });
+
+    try {
+      OrderDeleteMutation.mutate(selectedOrder, {
+        onSuccess: () => showAlert("success", "Order deleted successfully!"),
+        onError: (error) => showAlert("error", `Error: ${error.message}`),
+      });
+    } catch (error) {
+      console.error("Failed to mark order as deleted:", error);
+      showAlert("error", "Error while marking order as deleted.");
+    }
   };
 
   // Function to delete order
@@ -132,9 +169,9 @@ export default function OrderDetailPage() {
             Mark as Delivered
           </button>
         )}
-        {/* {!order.delivered && !order.cancelled && !order.deleted && (
+        {!order.delivered && !order.cancelled && !order.deleted && (
           <button
-            onClick={cancelOrder}
+            onClick={handleOrderCancel}
             className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-500 transition cursor-pointer"
           >
             Cancel Order
@@ -142,12 +179,12 @@ export default function OrderDetailPage() {
         )}
         {!order.deleted && !order.delivered && !order.cancelled && (
           <button
-            onClick={deleteOrder}
+            onClick={handleOrderDelete}
             className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-500 transition cursor-pointer"
           >
             Delete Order
           </button>
-        )} */}
+        )}
       </div>
 
       <Link
@@ -160,20 +197,40 @@ export default function OrderDetailPage() {
         isOpen={modal.isOpen}
         onClose={() => setModal({ isOpen: false, action: null })}
         onConfirm={
-          modal.action === "update" ? confirmOderDelivery : cancelOrder
+          modal.action === "deliver"
+            ? confirmOderDelivery
+            : modal.action === "cancel"
+            ? confirmOderCancel
+            : modal.action === "delete"
+            ? confirmOderDelete
+            : null
         }
         title={
-          modal.action === "update"
+          modal.action === "deliver"
             ? "Confirm Order Delivery"
-            : "Confirm Order Cancellation"
+            : modal.action === "cancel"
+            ? "Confirm Order Cancellation"
+            : modal.action === "delete"
+            ? "Confirm Order Deletion"
+            : ""
         }
         message={
-          modal.action === "update"
+          modal.action === "deliver"
             ? "Are you sure you want to mark this order as delivered?"
-            : "Are you sure you want to cancel this product?"
+            : modal.action === "cancel"
+            ? "Are you sure you want to cancel this order?"
+            : modal.action === "delete"
+            ? "Are you sure you want to delete this order?"
+            : ""
         }
         confirmText={
-          modal.action === "update" ? "Yes, Delivered" : "Yes, Cancel"
+          modal.action === "deliver"
+            ? "Yes, Deliver"
+            : modal.action === "cancel"
+            ? "Yes, Cancel"
+            : modal.action === "delete"
+            ? "Yes, Delete"
+            : ""
         }
       />
     </div>
