@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/lib/axiosInstance";
+import Cookies from "js-cookie";
 
 const useStore = create((set) => ({
   selectedCategory: null,
@@ -26,7 +27,11 @@ export const useFetchOrders = () => {
   return useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
-      const response = await api.get("/orders");
+      const token = Cookies.get("adminToken");
+      if (!token) throw new Error("Admin token not found. Please log in.");
+      const response = await api.get("/orders", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       return response.data;
     },
     staleTime: 1000 * 60 * 10,
@@ -52,13 +57,20 @@ export const useFetchProductById = (id) => {
 };
 
 // Fetch an order by ID
+const fetchOrderById = async (orderId) => {
+  if (!orderId) throw new Error("Order ID is required.");
+  const token = Cookies.get("adminToken");
+  if (!token) throw new Error("Admin token not found. Please log in.");
+  const response = await api.get(`/orders/${orderId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
 export const useFetchOrderById = (orderId) => {
   return useQuery({
     queryKey: ["order", orderId],
-    queryFn: async () => {
-      const response = await api.get(`/orders/${orderId}`);
-      return response.data;
-    },
+    queryFn: () => fetchOrderById(orderId),
     enabled: !!orderId,
     staleTime: 1000 * 60 * 10,
     cacheTime: 1000 * 60 * 30,
@@ -72,7 +84,14 @@ export const useCreateProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (productData) => {
-      const response = await api.post(`/products/product/create`, productData);
+      const token = Cookies.get("adminToken");
+      if (!token) throw new Error("Admin token not found. Please log in.");
+      const response = await api.post(`/products/product/create`, productData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     },
     onSuccess: () => {
@@ -86,8 +105,13 @@ export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (productId) => {
+      const token = Cookies.get("adminToken");
+      if (!token) throw new Error("Admin token not found. Please log in.");
       const response = await api.delete(
-        `/products/product/delete/${productId}`
+        `/products/product/delete/${productId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       return response.data;
     },
@@ -104,7 +128,7 @@ export const useLoginUser = () => {
       const response = await api.post(`/admin/login`, userCredentials);
       const data = response.data;
       if (data.token) {
-        localStorage.setItem("adminToken", data.token);
+        Cookies.set("adminToken", data.token, { expires: 7 });
         window.location.href = "/";
       }
       return data;
@@ -117,11 +141,23 @@ export const useDeliverOrder = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (orderId) => {
-      const response = await api.patch(`/orders/deliver/${orderId}`, {});
+      const token = Cookies.get("adminToken");
+      if (!token) throw new Error("Admin token not found. Please log in.");
+      const response = await api.patch(
+        `/orders/deliver/${orderId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["order", orderId]);
+    },
+    onError: (error) => {
+      console.error("Error delivering order:", error.message);
+      alert(error.message);
     },
   });
 };
@@ -131,11 +167,23 @@ export const useCancelOrder = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (orderId) => {
-      const response = await api.patch(`/orders/cancel/${orderId}`, {});
+      const token = Cookies.get("adminToken");
+      if (!token) throw new Error("Admin token not found. Please log in.");
+      const response = await api.patch(
+        `/orders/cancel/${orderId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["order", orderId]);
+    },
+    onError: (error) => {
+      console.error("Error cancelling order:", error.message);
+      alert(error.message);
     },
   });
 };
@@ -145,11 +193,23 @@ export const useDeleteOrder = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (orderId) => {
-      const response = await api.patch(`/orders/delete/${orderId}`, {});
+      const token = Cookies.get("adminToken");
+      if (!token) throw new Error("Admin token not found. Please log in.");
+      const response = await api.patch(
+        `/orders/delete/${orderId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["order", orderId]);
+    },
+    onError: (error) => {
+      console.error("Error deleting order:", error.message);
+      alert(error.message);
     },
   });
 };

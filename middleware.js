@@ -4,7 +4,7 @@ export function middleware(request) {
   const token = request.cookies.get("adminToken")?.value;
 
   // Define protected routes
-  const protectedRoutes = ["/createproduct", "/orders"];
+  const protectedRoutes = ["/createproduct", "/orders", "/"];
 
   if (
     protectedRoutes.some((route) =>
@@ -20,5 +20,5 @@ export function middleware(request) {
 
 // Corrected matcher config
 export const config = {
-  matcher: ["/createproduct", "/orders/:path*"],
+  matcher: ["/createproduct", "/orders/:path*", "/"],
 };
