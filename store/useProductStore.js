@@ -166,18 +166,25 @@ export const useDeliverOrder = () => {
       const token = Cookies.get("adminToken");
       if (!token) throw new Error("Admin token not found. Please log in.");
 
-      const response = await api.post(`/orders/deliver/${orderId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      // return response.data;
+      const response = await api.patch(
+        `/orders/deliver/${orderId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log(response.data);
-      
+
+      return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["orderId"]); // Refetch products after updating
+      queryClient.invalidateQueries(["orderId"]);
+    },
+    onError: (error) => {
+      console.error("Error delivering order:", error.message);
+      alert(error.message);
     },
   });
 };

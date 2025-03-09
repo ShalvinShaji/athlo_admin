@@ -86,21 +86,21 @@ export default function OrderDetailsPage() {
                   {order.totalAmount}
                 </p>
                 <p className="flex items-center gap-2 mt-1">
-                  {order.delivered ? (
+                  {order.delivered === true ? (
                     <CheckCircle size={18} className="text-green-400" />
-                  ) : order.cancelled ? (
+                  ) : order.cancelled === true ? (
                     <Ban size={18} className="text-yellow-400" />
-                  ) : order.deleted ? (
+                  ) : order.deleted === true ? (
                     <Trash2 size={18} className="text-gray-400" />
                   ) : (
                     <XCircle size={18} className="text-red-400" />
                   )}
                   <strong>Status:</strong>{" "}
-                  {order.delivered
+                  {order.delivered === true
                     ? "Delivered"
-                    : order.cancelled
+                    : order.cancelled === true
                     ? "Cancelled"
-                    : order.deleted
+                    : order.deleted === true
                     ? "Deleted"
                     : "Undelivered"}
                 </p>
