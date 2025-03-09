@@ -9,8 +9,8 @@ const Login = () => {
   const { mutate: loginUser, isLoading, isError, error } = useLoginUser();
 
   return (
-    <div className="flex items-center justify-center bg-[#1111] pt-[120px]">
-      <div className="w-full max-w-md p-8 space-y-6 bg-[#2222] shadow-lg">
+    <div className="flex items-center justify-center bg-[#1111] min-h-[calc(100vh-150px)] md:min-h-[calc(100vh-170px)] lg:min-h-[calc(100vh-220px)]">
+      <div className="w-full max-w-sm sm:max-w-md p-8 space-y-6 bg-[#2222] shadow-lg rounded-lg">
         <h1 className="text-3xl font-bold text-center mb-6">Login to Athlo</h1>
 
         {isError && <p className="text-red-400 text-center">{error.message}</p>}
@@ -45,7 +45,7 @@ const Login = () => {
                 <Field
                   type="email"
                   name="email"
-                  className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
+                  className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none rounded"
                 />
                 <ErrorMessage
                   name="email"
@@ -61,7 +61,7 @@ const Login = () => {
                 <Field
                   type="password"
                   name="password"
-                  className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none"
+                  className="w-full p-2 mt-1 text-white bg-gray-700 border border-gray-600 focus:outline-none rounded"
                 />
                 <ErrorMessage
                   name="password"
@@ -73,7 +73,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isSubmitting || isLoading}
-                className="w-full py-2 font-semibold text-white bg-amber-500 hover:bg-amber-600 focus:outline-none cursor-pointer"
+                className="w-full py-2 font-semibold text-white bg-amber-500 hover:bg-amber-600 focus:outline-none cursor-pointer rounded"
               >
                 {isLoading ? "Logging in..." : "Login"}
               </button>

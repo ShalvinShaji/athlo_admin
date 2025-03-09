@@ -58,13 +58,15 @@ export default function Navbar() {
     <>
       {/* Fixed Navbar */}
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        className={`${
+          isScrolled ? "fixed top-0 left-0 w-full z-600" : "relative"
+        } transition-all duration-300 h-[70px]   ${
           isScrolled
             ? "bg-white/90 backdrop-blur-md shadow-sm"
             : "bg-transparent"
         }`}
       >
-        <nav className="max-w-[2000px] mx-auto">
+        <nav className="max-w-[2000px] mx-auto ">
           <div className="flex items-center justify-between px-4 lg:px-8 py-4">
             {/* Logo */}
             <Link
