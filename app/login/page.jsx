@@ -2,7 +2,7 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useRouter } from "next/navigation";
-import { useLoginUser } from "@/store/useProductStore";
+import { useLoginUser } from "@/store/useStore";
 
 const Login = () => {
   const router = useRouter();

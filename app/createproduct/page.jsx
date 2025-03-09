@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useFetchProducts, useCreateProduct } from "@/store/useProductStore";
+import { useFetchProducts, useCreateProduct } from "@/store/useStore";
 import ToastMessage from "@/components/ToastMessage";
 
 const CreateProduct = () => {

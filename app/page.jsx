@@ -1,6 +1,6 @@
 "use client";
 
-import { useFetchProducts } from "@/store/useProductStore";
+import { useFetchProducts } from "@/store/useStore";
 import ProductList from "@/components/ProductList";
 import Loading from "./loading";
 

@@ -12,7 +12,6 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import Link from "next/link";
 import ToastMessage from "@/components/ToastMessage";
 import Loading from "@/app/loading";
 import CustomModal from "@/components/CustomModal";
@@ -21,8 +20,7 @@ import {
   useDeleteOrder,
   useDeliverOrder,
   useFetchOrderById,
-} from "@/store/useProductStore";
-import Image from "next/image";
+} from "@/store/useStore";
 
 export default function OrderDetailPage() {
   const params = useParams();
@@ -156,12 +154,7 @@ export default function OrderDetailPage() {
               className="shadow-lg rounded-lg overflow-hidden border flex flex-col items-center justify-center h-[300px] w-[200px] p-6 "
             >
               <div className="relative w-[150px] h-[150px]">
-                <Image
-                  src={item.product.image}
-                  alt={item.product.name}
-                  layout="fill"
-                  objectFit="contain"
-                />
+                <img src={item.product.image} alt={item.product.name} />
               </div>
               <div className="text-center mt-4">
                 <h2 className="text-lg ">{item.product.name}</h2>

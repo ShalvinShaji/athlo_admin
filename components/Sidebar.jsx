@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { Menu, X, Home, ShoppingCart } from "lucide-react";
-import useProductStore from "@/store/useProductStore";
-import { useFetchProducts } from "@/store/useProductStore";
+import useStore from "@/store/useStore";
+import { useFetchProducts } from "@/store/useStore";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setSelectedCategory } = useProductStore();
+  const { setSelectedCategory } = useStore();
   const { data: products = [] } = useFetchProducts();
 
   const toggleSidebar = () => {

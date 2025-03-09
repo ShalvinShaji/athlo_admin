@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
-import { useFetchProducts, useDeleteProduct } from "@/store/useProductStore";
-import useProductStore from "@/store/useProductStore";
+import { useFetchProducts, useDeleteProduct } from "@/store/useStore";
+import useStore from "@/store/useStore";
 import Sidebar from "./Sidebar";
 import Cookies from "js-cookie";
 import ToastMessage from "@/components/ToastMessage";
 import Loading from "@/app/loading";
-import CustomModal from "@/components/CustomModal"; 
+import CustomModal from "@/components/CustomModal";
 import Image from "next/image";
 
 export default function ProductList() {
   const { data: products = [], isLoading, error } = useFetchProducts();
 
-  const { selectedCategory } = useProductStore();
+  const { selectedCategory } = useStore();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [alert, setAlert] = useState({ type: "", message: "" });
   const [modal, setModal] = useState({ isOpen: false, action: null });

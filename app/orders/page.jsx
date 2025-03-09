@@ -10,13 +10,12 @@ import {
   Trash2,
   Ban,
 } from "lucide-react";
-import { useFetchOrders } from "@/store/useProductStore";
+import { useFetchOrders } from "@/store/useStore";
 import Loading from "../loading";
 
 export default function OrderDetailsPage() {
   const { data: orders = [], isLoading, error } = useFetchOrders();
   const [filter, setFilter] = useState("all");
-  console.log(orders);
 
   if (isLoading) return <Loading />;
   if (error)
