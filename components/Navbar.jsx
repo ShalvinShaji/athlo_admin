@@ -110,7 +110,7 @@ export default function Navbar() {
               {menuOpen && (
                 <div
                   ref={menuRef}
-                  className="absolute right-10 top-full mt-2 w-40 bg-[#111] shadow-md rounded-lg border border-zinc-700 p-3"
+                  className="absolute right-10 top-full mt-2 w-40 bg-[#111] shadow-md rounded-lg border border-zinc-700 p-2"
                 >
                   <ul className="py-2">
                     {isLoggedIn ? (
