@@ -60,19 +60,14 @@ export default function Navbar() {
       <header
         className={`${
           isScrolled ? "fixed top-0 left-0 w-full z-600" : "relative"
-        } transition-all duration-300 h-[70px]   ${
-          isScrolled
-            ? "bg-white/90 backdrop-blur-md shadow-sm"
-            : "bg-transparent"
-        }`}
+        } transition-all duration-300 h-[70px]   bg-[#111] shadow-lg`}
       >
         <nav className="max-w-[2000px] mx-auto ">
           <div className="flex items-center justify-between px-4 lg:px-8 py-4">
             {/* Logo */}
             <Link
               href="/"
-              className={`text-xl lg:text-2xl font-bold tracking-tighter ${
-                isScrolled ? "text-black" : "text-white"
+              className={`text-xl lg:text-2xl font-bold tracking-tighter "text-white"
               }`}
             >
               ATHLO
@@ -83,8 +78,7 @@ export default function Navbar() {
               {isLoggedIn && (
                 <Link
                   href="/createproduct"
-                  className={`text-base font-medium hover:opacity-70 transition-opacity ${
-                    isScrolled ? "text-black" : "text-white"
+                  className={`text-base font-medium hover:opacity-70 transition-opacity "text-white"
                   }`}
                 >
                   Create Product
@@ -93,8 +87,7 @@ export default function Navbar() {
               {isLoggedIn && (
                 <Link
                   href="/orders"
-                  className={`text-base font-medium hover:opacity-70 transition-opacity ${
-                    isScrolled ? "text-black" : "text-white"
+                  className={`text-base font-medium hover:opacity-70 transition-opacity  "text-white"
                   }`}
                 >
                   Orders
@@ -107,8 +100,7 @@ export default function Navbar() {
               {/* User Icon */}
               <button
                 onClick={() => setMenuOpen((prev) => !prev)}
-                className={`relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors cursor-pointer ${
-                  isScrolled ? "text-black" : "text-white"
+                className={`relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-700 transition-colors cursor-pointer  text-white"
                 }`}
               >
                 <User size={24} />
@@ -118,7 +110,7 @@ export default function Navbar() {
               {menuOpen && (
                 <div
                   ref={menuRef}
-                  className="absolute right-10 top-full mt-2 w-40 bg-white shadow-md rounded-lg border border-gray-200"
+                  className="absolute right-10 top-full mt-2 w-40 bg-[#111] shadow-md rounded-lg border border-zinc-700 p-3"
                 >
                   <ul className="py-2">
                     {isLoggedIn ? (
@@ -126,7 +118,7 @@ export default function Navbar() {
                         <li>
                           <Link
                             href="/profile"
-                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            className="block  text-gray-300 hover:text-white hover:bg-gray-800 p-2 rounded-lg transition-colors"
                           >
                             Profile
                           </Link>
@@ -134,7 +126,7 @@ export default function Navbar() {
                         <li>
                           <Link
                             href="/settings"
-                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                            className="block  text-gray-300 hover:text-white hover:bg-gray-800 p-2 rounded-lg transition-colors"
                           >
                             Settings
                           </Link>
@@ -142,7 +134,7 @@ export default function Navbar() {
                         <li>
                           <button
                             onClick={handleLogout}
-                            className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
+                            className="block w-full text-start  text-gray-200 bg-red-500 hover:text-white hover:bg-red-400 p-2 rounded-lg transition-colors cursor-pointer mt-2"
                           >
                             Logout
                           </button>
@@ -166,8 +158,7 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className={`lg:hidden p-2 -mr-2 hover:bg-white/10 rounded-lg transition-colors ${
-                isScrolled ? "text-black" : "text-white"
+              className={`lg:hidden p-2 -mr-2 hover:bg-white/10 rounded-lg transition-colors text-white
               }`}
               aria-label="Toggle mobile menu"
             >
@@ -177,7 +168,7 @@ export default function Navbar() {
 
           {/* Mobile Menu */}
           <div
-            className={`lg:hidden fixed inset-x-0 top-[65px] p-6 bg-white/90 backdrop-blur-md shadow-lg transition-all duration-300 ease-in-out ${
+            className={`lg:hidden fixed inset-x-0 top-[65px] p-6 bg-[#111] backdrop-blur-md shadow-lg transition-all duration-300 ease-in-out ${
               isOpen
                 ? "translate-y-0 opacity-100 visible"
                 : "-translate-y-full opacity-0 invisible"
