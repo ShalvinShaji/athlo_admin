@@ -55,7 +55,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`${
+      className={`border-b-1 border-[#333] ${
         isScrolled ? "fixed top-0 left-0 w-full z-600" : "relative"
       } transition-all duration-300 h-[70px] bg-[#111] shadow-lg`}
     >

@@ -30,7 +30,7 @@ const CreateProduct = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#1111] pt-[120px] relative">
+    <div className="flex flex-col items-center justify-center bg-[#1111] p-6 ">
       <ToastMessage
         type={alert.type}
         message={alert.message}
@@ -39,7 +39,7 @@ const CreateProduct = () => {
 
       <h1 className="text-3xl font-bold text-white mb-6">Create Product</h1>
 
-      <div className="flex w-[80%] p-8 bg-[#2222] shadow-lg gap-6">
+      <div className="flex w-[80%] p-8 bg-[#2222] shadow-lg gap-6 border-1 border-[#333] rounded-md">
         <div className="flex-1 p-6 bg-zinc-800 rounded-lg shadow-md">
           <Formik
             initialValues={{

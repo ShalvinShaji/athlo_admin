@@ -36,20 +36,30 @@ export default function OrderDetailsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#111] text-white pt-[120px] p-6">
+    <div className="min-h-screen bg-[#1111] text-white p-6">
       <h1 className="text-3xl font-bold text-center mb-4">All Orders</h1>
 
-      <div className="flex justify-end mb-4">
+      <div className="flex justify-end mb-4 cursor-pointer">
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="bg-[#222] text-white px-4 py-2 rounded-lg border border-gray-600"
+          className="bg-[#222] text-white p-4 rounded-lg border border-gray-600 outline-none cursor-pointer "
         >
-          <option value="all">All Orders</option>
-          <option value="delivered">Delivered Orders</option>
-          <option value="undelivered">Undelivered Orders</option>
-          <option value="cancelled">Cancelled Orders</option>
-          <option value="deleted">Deleted Orders</option>
+          <option className="cursor-pointer" value="all">
+            All Orders
+          </option>
+          <option className="cursor-pointer" value="delivered">
+            Delivered Orders
+          </option>
+          <option className="cursor-pointer" value="undelivered">
+            Undelivered Orders
+          </option>
+          <option className="cursor-pointer" value="cancelled">
+            Cancelled Orders
+          </option>
+          <option className="cursor-pointer" value="deleted">
+            Deleted Orders
+          </option>
         </select>
       </div>
 
